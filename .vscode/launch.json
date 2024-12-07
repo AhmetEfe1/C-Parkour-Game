@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/ahmet/Documents/GitHub/C-Parkour-Game",
-      "program": "c:/Users/ahmet/Documents/GitHub/C-Parkour-Game/build/Debug/outDebug",
+      "cwd": "c:/Users/ahmet/Documents/GitHub/C-Parkour-Game/MAP",
+      "program": "c:/Users/ahmet/Documents/GitHub/C-Parkour-Game/MAP/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
