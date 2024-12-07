@@ -59,6 +59,7 @@
   "files.associations": {
     "stdio.h": "c",
     "unistd.h": "c",
-    "stdlib.h": "c"
+    "stdlib.h": "c",
+    "string.h": "c"
   }
 }

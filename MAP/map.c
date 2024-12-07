@@ -1,10 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <conio.h>
 
-#define ROWS 20
-#define COLS 40
+#define ROWS 11
+#define COLS 500
 
-// Haritayı dosyadan yükleme fonksiyonu
+
 void load_map(const char *filename, char map[ROWS][COLS]) {
     FILE *file = fopen(filename, "r"); // Dosyayı okuma modunda aç
     if (!file) {
@@ -14,25 +17,29 @@ void load_map(const char *filename, char map[ROWS][COLS]) {
 
     // Haritayı satır satır okuyup diziye aktar
     for (int i = 0; i < ROWS; i++) {
-        fgets(map[i], COLS + 2, file); 
-        map[i][COLS] = '\0'; // Yeni satır karakterini kaldır
+        if (fgets(map[i], COLS + 2, file)) {
+            map[i][strcspn(map[i], "\n")] = '\0'; // Satır sonundaki '\n' karakterini kaldır
+        } 
     }
 
-    fclose(file); // Dosyayı kapat
+    fclose(file); 
 }
 
-// Haritayı ekranda çizme fonksiyonu
 void draw_map(char map[ROWS][COLS]) {
-    system("cls"); 
+    system("cls"); // Terminali temizle
     for (int i = 0; i < ROWS; i++) {
-        printf("%s", map[i]); 
+        printf("%s\n", map[i]); // \n karakteri eklenmezse fazladan boşluk olmaz
     }
 }
+
+
+
+
 
 int main() {
     char map[ROWS][COLS];
     
-    load_map("./map.txt", map);
+    load_map("C:\\Users\\ahmet\\Documents\\GitHub\\C-Parkour-Game\\MAP\\map.txt", map);
 
     draw_map(map);
 
