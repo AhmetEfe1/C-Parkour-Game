@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <windows.h>  // Sleep fonksiyonu için
+#include <windows.h> 
 #include <conio.h>
 
 #define MAP_ROWS 12
@@ -9,7 +9,6 @@
 #define VIEW_ROWS 12
 #define VIEW_COLS 100
 
-// Harita dizisini doğru şekilde tanımla
 char bground[MAP_ROWS][MAP_COLS] = {
     "@@@@@             @@@@@@@@            @@@@@@@@@         @@@@@                 @@@@@@@                @@@",
     "@@@@@@              @@@@@               @@@@@         @@@@@@@@@             @@@@@@                  @@@@",
@@ -33,19 +32,19 @@ void drawScreen(char screenarray[MAP_ROWS][MAP_COLS], int start_row, int start_c
         for (int j = start_col; j < start_col + VIEW_COLS; j++) {
             printf("%c", screenarray[i][j % MAP_COLS]);  // Harita sütunlarını döngüsel yap
         }
-        printf("\n");  // Satırdan sonra bir alt satıra geç
+        printf("\n"); 
     }
 }
+
 
 int main() {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_CURSOR_INFO cursorInfo;
     GetConsoleCursorInfo(hConsole, &cursorInfo);
-    
-    // Cursoru gizle
     cursorInfo.bVisible = FALSE;
     SetConsoleCursorInfo(hConsole, &cursorInfo);
 
+    
     int start_row = 0;  
     int start_col = 0;  
 
