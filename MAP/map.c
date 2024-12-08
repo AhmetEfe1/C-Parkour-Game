@@ -1,47 +1,64 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
+#include <windows.h>  // Sleep fonksiyonu için
 #include <conio.h>
 
-#define ROWS 11
-#define COLS 500
+#define MAP_ROWS 12
+#define MAP_COLS 100
+#define VIEW_ROWS 12
+#define VIEW_COLS 100
 
+// Harita dizisini doğru şekilde tanımla
+char bground[MAP_ROWS][MAP_COLS] = {
+    "@@@@@             @@@@@@@@            @@@@@@@@@         @@@@@                 @@@@@@@                @@@",
+    "@@@@@@              @@@@@               @@@@@         @@@@@@@@@             @@@@@@                  @@@@",
+    "                                                                                                        ",
+    "                                                                                                        ",
+    "                                                                                                        ",
+    "                                                                                                        ",
+    "                                                                                                        ",
+    "                                                                                                        ",
+    "                                                                                                        ",
+    "________________________________________________________________________________________________________",
+    "/ / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / ",
+};
 
-void load_map(const char *filename, char map[ROWS][COLS]) {
-    FILE *file = fopen(filename, "r"); // Dosyayı okuma modunda aç
-    if (!file) {
-        perror("Harita dosyasi acilamadi");
-        exit(1);
+// Haritayı çizmek için fonksiyon
+void drawScreen(char screenarray[MAP_ROWS][MAP_COLS], int start_row, int start_col) {
+    system("cls");
+    
+    // Ekranın sadece belli bir kısmını göster
+    for (int i = start_row; i < start_row + VIEW_ROWS; i++) {
+        for (int j = start_col; j < start_col + VIEW_COLS; j++) {
+            printf("%c", screenarray[i][j % MAP_COLS]);  // Harita sütunlarını döngüsel yap
+        }
+        printf("\n");  // Satırdan sonra bir alt satıra geç
     }
-
-    // Haritayı satır satır okuyup diziye aktar
-    for (int i = 0; i < ROWS; i++) {
-        if (fgets(map[i], COLS + 2, file)) {
-            map[i][strcspn(map[i], "\n")] = '\0'; // Satır sonundaki '\n' karakterini kaldır
-        } 
-    }
-
-    fclose(file); 
 }
-
-void draw_map(char map[ROWS][COLS]) {
-    system("cls"); // Terminali temizle
-    for (int i = 0; i < ROWS; i++) {
-        printf("%s\n", map[i]); // \n karakteri eklenmezse fazladan boşluk olmaz
-    }
-}
-
-
-
-
 
 int main() {
-    char map[ROWS][COLS];
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_CURSOR_INFO cursorInfo;
+    GetConsoleCursorInfo(hConsole, &cursorInfo);
     
-    load_map("C:\\Users\\ahmet\\Documents\\GitHub\\C-Parkour-Game\\MAP\\map.txt", map);
+    // Cursoru gizle
+    cursorInfo.bVisible = FALSE;
+    SetConsoleCursorInfo(hConsole, &cursorInfo);
 
-    draw_map(map);
+    int start_row = 0;  
+    int start_col = 0;  
+
+    while (1) {
+        drawScreen(bground, start_row, start_col); 
+
+        start_col++;  // Haritayı sağa kaydır
+        if (start_col >= VIEW_COLS) {
+            start_col = 0;  // Sütun limiti aşıldığında sıfırla
+        }
+
+        Sleep(50); 
+    }
 
     return 0;
 }
