@@ -10,18 +10,19 @@
 #define VIEW_COLS 100
 
 char bground[MAP_ROWS][MAP_COLS] = {
-    "@@@@@             @@@@@@@@            @@@@@@@@@         @@@@@                 @@@@@@@                @@@",
-    "@@@@@@              @@@@@               @@@@@         @@@@@@@@@             @@@@@@                  @@@@",
+    "@@@@@             @@@@@@@@            @@@@@@@@@         @@@@@                 @@@@@@@                @@@  ",
+    "@@@@@@              @@@@@               @@@@@         @@@@@@@@@             @@@@@@                  @@@@ ",
     "                                                                                                        ",
     "                                                                                                        ",
     "                                                                                                        ",
     "                                                                                                        ",
     "                                                                                                        ",
     "                                                                                                        ",
-    "                                                                                                        ",
+    "                                                                                #                       ",
     "________________________________________________________________________________________________________",
     "/ / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / ",
 };
+
 
 // Haritayı çizmek için fonksiyon
 void drawScreen(char screenarray[MAP_ROWS][MAP_COLS], int start_row, int start_col) {
@@ -36,6 +37,44 @@ void drawScreen(char screenarray[MAP_ROWS][MAP_COLS], int start_row, int start_c
     }
 }
 
+int manX = 8, manY = 50;
+int is_jumping = 0;  
+int jump_timer = 0;   
+
+void move_man(char input) {
+    static int originalX = 0; // Karakterin orijinal X pozisyonunu saklar
+
+    if (is_jumping) {
+        if (jump_timer > 0) {
+            jump_timer--;  
+        } else {
+           
+            bground[manX][manY] = ' ';  // Eski konumu temizle
+            manX = originalX;           // Orijinal X pozisyonuna dön
+            bground[manX][manY] = 'P';  // Karakteri yeni konuma koy
+            is_jumping = 0;             // Atlama durumunu sıfırla
+        }
+        return;  
+    }
+
+    if (input == 'w') {
+     originalX = manX;           // Orijinal X pozisyonunu kaydet
+      
+      int nextY = (manY + 5) % MAP_COLS;
+        bground[manX][manY] = ' ';  
+        manY = nextY;              
+        bground[manX][manY] = 'P'; 
+
+        if (manX > 1) {             // Harita sınırını kontrol et
+            bground[manX][manY] = ' ';  
+            manX -= 2;  
+            bground[manX][manY] = 'P';  
+            is_jumping = 1;         // Atlama durumunu başlat
+            jump_timer = 4;         // Yukarıda kalma süresi 
+        }
+    }
+}
+
 
 int main() {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -44,20 +83,40 @@ int main() {
     cursorInfo.bVisible = FALSE;
     SetConsoleCursorInfo(hConsole, &cursorInfo);
 
-    
-    int start_row = 0;  
-    int start_col = 0;  
+    int start_row = 0;
+    int start_col = 0;
+
+    bground[manX][manY] = 'P'; // Karakteri başlangıç konumuna koy
 
     while (1) {
-        drawScreen(bground, start_row, start_col); 
-
-        start_col++;  // Haritayı sağa kaydır
-        if (start_col >= VIEW_COLS) {
-            start_col = 0;  // Sütun limiti aşıldığında sıfırla
+        if (_kbhit()) {  // Kullanıcı girişi varsa
+            char input = _getch();
+            move_man(input); // Kullanıcı girdisine göre hareket
+        } else {
+            move_man('\0'); // Atlama durumunu kontrol et
         }
 
-        Sleep(50); 
+        // Karakterin sağa hareketi
+        int nextY = (manY + 1) % MAP_COLS;
+        if (!is_jumping && bground[manX][nextY] == ' ') {
+            bground[manX][manY] = ' ';  
+            manY = nextY;              
+            bground[manX][manY] = 'P'; 
+        }
+
+        // Ekranı güncelle
+        drawScreen(bground, start_row, start_col); 
+
+        // Haritayı sağa kaydır
+        start_col = (start_col + 1) % MAP_COLS;
+
+        Sleep(100); // Bekleme süresi (hızı kontrol eder)
     }
 
     return 0;
 }
+
+
+
+
+
