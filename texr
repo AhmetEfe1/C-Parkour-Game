@@ -1,0 +1,4 @@
+// 1. Tüm engelleri sola kaydır
+    for (int i = 0; i < obstacle_count; i++) {
+        obstacles[i][1]--; // Sütunu sola kaydır
+    }
