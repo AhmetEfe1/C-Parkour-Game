@@ -61,6 +61,7 @@
     "unistd.h": "c",
     "stdlib.h": "c",
     "string.h": "c",
-    "windows.h": "c"
+    "windows.h": "c",
+    "texr": "cpp"
   }
 }
